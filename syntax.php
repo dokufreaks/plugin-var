@@ -16,12 +16,12 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
 
   function getInfo(){
     return array(
-      'author' => 'Esther Brunner',
-      'email'  => 'wikidesign@gmail.com',
-      'date'   => '2007-01-16',
+      'author' => 'Gina Häußge, Michael Klier, Esther Brunner',
+      'email'  => 'dokuwiki@chimeric.de',
+      'date'   => '2008-02-14',
       'name'   => 'Variable Plugin',
       'desc'   => 'Insert dynamic variables',
-      'url'    => 'http://www.wikidesign.ch/en/plugin/var/start',
+      'url'    => 'http://wiki.splitbrain.org/plugin:var',
     );
   }
 
