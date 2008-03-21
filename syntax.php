@@ -67,7 +67,7 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
         $nocache = true;
         break;
       case 'DATE':
-        $xhtml   = date($conf['dformat']);
+        $xhtml   = strftime($conf['dformat']);
         $nocache = true;
         break;
       case 'YEAR':
