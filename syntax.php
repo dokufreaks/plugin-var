@@ -14,92 +14,91 @@ require_once(DOKU_PLUGIN.'syntax.php');
  
 class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
 
-  function getInfo(){
-    return array(
-      'author' => 'Gina Häußge, Michael Klier, Esther Brunner',
-      'email'  => 'dokuwiki@chimeric.de',
-      'date'   => '2008-02-14',
-      'name'   => 'Variable Plugin',
-      'desc'   => 'Insert dynamic variables',
-      'url'    => 'http://wiki.splitbrain.org/plugin:var',
-    );
-  }
-
-  function getType(){ return 'substition'; }
-  function getSort(){ return 99; }
-  function connectTo($mode) { $this->Lexer->addSpecialPattern('@\w{2,5}@', $mode, 'plugin_var'); }
-
-  function handle($match, $state, $pos, &$handler){
-    $match = substr($match, 1, -1); // strip markup
-    return array($match);
-  }            
-
-  function render($mode, &$renderer, $data) {
-    global $ID;
-    global $INFO;
-    global $conf;
-    
-    $meta    = $data[0];
-    $nocache = false;
-    switch ($meta){
-      case 'ID':
-        $xhtml = $ID;
-        $meta  = $xhtml;
-        break;
-      case 'NS':
-        $xhtml = getNS($ID);
-        $meta  = $xhtml;
-        break;
-      case 'PAGE':
-        $xhtml = strtr(noNS($ID),'_',' ');
-        $meta  = $xhtml;
-        break;
-      case 'USER':
-        $xhtml   = $_SERVER['REMOTE_USER'];
-        $nocache = true;
-        break;
-      case 'NAME':
-        $xhtml   = ($_SERVER['REMOTE_USER'] ? $INFO['userinfo']['name'] : clientIP());
-        $nocache = true;
-        break;
-      case 'MAIL':
-        $xhtml   = ($_SERVER['REMOTE_USER'] ? $INFO['userinfo']['mail'] : '');
-        $nocache = true;
-        break;
-      case 'DATE':
-        $xhtml   = strftime($conf['dformat']);
-        $nocache = true;
-        break;
-      case 'YEAR':
-        $xhtml = date('Y');
-        break;
-      case 'MONTH':
-        $xhtml = date('m');
-        break;
-      case 'DAY':
-        $xhtml   = date('d');
-        $nocache = true;
-        break;
-      default:
-        $xhtml = $meta;
+    function getInfo() {
+        return array(
+                'author' => 'Gina Häußge, Michael Klier, Esther Brunner',
+                'email'  => 'dokuwiki@chimeric.de',
+                'date'   => '2008-02-14',
+                'name'   => 'Variable Plugin',
+                'desc'   => 'Insert dynamic variables',
+                'url'    => 'http://wiki.splitbrain.org/plugin:var',
+                );
     }
-    
-    // for XHTML output
-    if ($mode == 'xhtml'){
-      // prevent caching to ensure the included pages are always fresh
-      if ($nocache) $renderer->info['cache'] = false;
-      
-      $renderer->doc .= hsc($xhtml);
-      return true;
-      
-    // for metadata renderer
-    } elseif ($mode == 'metadata'){
-      if ($renderer->capture) $renderer->doc .= $meta;
-      return true;
+
+    function getType() { return 'substition'; }
+    function getSort() { return 99; }
+    function connectTo($mode) { $this->Lexer->addSpecialPattern('@\w{2,5}@', $mode, 'plugin_var'); }
+
+    function handle($match, $state, $pos, &$handler) {
+        $match = substr($match, 1, -1); // strip markup
+        return array($match);
+    }            
+
+    function render($mode, &$renderer, $data) {
+        global $ID;
+        global $INFO;
+        global $conf;
+
+        $meta    = $data[0];
+        $nocache = false;
+        switch ($meta) {
+            case 'ID':
+                $xhtml = $ID;
+                $meta  = $xhtml;
+                break;
+            case 'NS':
+                $xhtml = getNS($ID);
+                $meta  = $xhtml;
+                break;
+            case 'PAGE':
+                $xhtml = strtr(noNS($ID),'_',' ');
+                $meta  = $xhtml;
+                break;
+            case 'USER':
+                $xhtml   = $_SERVER['REMOTE_USER'];
+                $nocache = true;
+                break;
+            case 'NAME':
+                $xhtml   = ($_SERVER['REMOTE_USER'] ? $INFO['userinfo']['name'] : clientIP());
+                $nocache = true;
+                break;
+            case 'MAIL':
+                $xhtml   = ($_SERVER['REMOTE_USER'] ? $INFO['userinfo']['mail'] : '');
+                $nocache = true;
+                break;
+            case 'DATE':
+                $xhtml   = strftime($conf['dformat']);
+                $nocache = true;
+                break;
+            case 'YEAR':
+                $xhtml = date('Y');
+                break;
+            case 'MONTH':
+                $xhtml = date('m');
+                break;
+            case 'DAY':
+                $xhtml   = date('d');
+                $nocache = true;
+                break;
+            default:
+                $xhtml = $meta;
+        }
+
+        // for XHTML output
+        if ($mode == 'xhtml') {
+            // prevent caching to ensure the included pages are always fresh
+            if ($nocache) $renderer->info['cache'] = false;
+
+            $renderer->doc .= hsc($xhtml);
+            return true;
+
+            // for metadata renderer
+        } elseif ($mode == 'metadata') {
+            if ($renderer->capture) $renderer->doc .= $meta;
+            return true;
+        }
+        return false;
     }
-    return false;
-  }
-   
+
 }
- 
-//Setup VIM: ex: et ts=4 enc=utf-8 :
+//vim:ts=4:sw=4:et:enc=utf-8: 
