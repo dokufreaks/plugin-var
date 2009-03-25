@@ -18,16 +18,16 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
         return array(
                 'author' => 'Gina Häußge, Michael Klier, Esther Brunner',
                 'email'  => 'dokuwiki@chimeric.de',
-                'date'   => '2008-02-14',
+                'date'   => @file_get_contents(DOKU_PLUGIN . 'var/VERSION'),
                 'name'   => 'Variable Plugin',
                 'desc'   => 'Insert dynamic variables',
-                'url'    => 'http://wiki.splitbrain.org/plugin:var',
+                'url'    => 'http://dokuwiki.org/plugin:var',
                 );
     }
 
     function getType() { return 'substition'; }
     function getSort() { return 99; }
-    function connectTo($mode) { $this->Lexer->addSpecialPattern('@\w{2,5}@', $mode, 'plugin_var'); }
+    function connectTo($mode) { $this->Lexer->addSpecialPattern('@\w{2,6}@', $mode, 'plugin_var'); }
 
     function handle($match, $state, $pos, &$handler) {
         $match = substr($match, 1, -1); // strip markup
@@ -80,8 +80,20 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
                 $xhtml   = date('d');
                 $nocache = true;
                 break;
+            case 'WIKI':
+                $xhtml = $conf['title'];
+                break;
+            case 'TITLE':
+                $xhtml = ($INFO['meta']['title']) ? $INFO['meta']['title'] : $meta;
+                $nocache = true;
+                break;
+            case 'SERVER':
+                $xhtml = ($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $meta;
+                $nocache = true;
+                break;
             default:
                 $xhtml = $meta;
+                break;
         }
 
         // for XHTML output
@@ -92,13 +104,12 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
             $renderer->doc .= hsc($xhtml);
             return true;
 
-            // for metadata renderer
+        // for metadata renderer
         } elseif ($mode == 'metadata') {
             if ($renderer->capture) $renderer->doc .= $meta;
             return true;
         }
         return false;
     }
-
 }
 // vim:ts=4:sw=4:et:enc=utf-8: 
