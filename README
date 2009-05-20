@@ -1,9 +1,8 @@
 ====== Variable Plugin for DokuWiki ======
 
 All documentation for the Variable Plugin is available online at:
-http://dokuwiki.org/plugin:var
 
-This plugin requires DokuWiki 2006-03-09 or later.
+  * http://dokuwiki.org/plugin:var
 
 (c) 2005 - 2007 by Esther Brunner <wikidesign@gmail.com>
 (c) 2008 - 2009 by Gina Häußge, Michael Klier <dokuwiki@chimeric.de>
