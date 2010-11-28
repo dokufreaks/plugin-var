@@ -14,17 +14,6 @@ require_once(DOKU_PLUGIN.'syntax.php');
  
 class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
 
-    function getInfo() {
-        return array(
-                'author' => 'Gina Häußge, Michael Klier, Esther Brunner',
-                'email'  => 'dokuwiki@chimeric.de',
-                'date'   => @file_get_contents(DOKU_PLUGIN . 'var/VERSION'),
-                'name'   => 'Variable Plugin',
-                'desc'   => 'Insert dynamic variables',
-                'url'    => 'http://dokuwiki.org/plugin:var',
-                );
-    }
-
     function getType() { return 'substition'; }
     function getSort() { return 99; }
     function connectTo($mode) { $this->Lexer->addSpecialPattern('@\w{2,6}@', $mode, 'plugin_var'); }
