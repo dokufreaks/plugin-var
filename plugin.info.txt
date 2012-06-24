@@ -2,7 +2,7 @@
 base   var
 author Gina Häußge, Michael Klier, Esther Brunner
 email  dokuwiki@chimeric.de
-date   2009-03-25
+date   2012-06-24
 name   Variable Plugin
 desc   Insert dynamic variables.
 url    http://www.dokuwiki.org/plugin:var
