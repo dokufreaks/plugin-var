@@ -11,8 +11,12 @@ if(!defined('DOKU_INC')) die();
 
 if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once(DOKU_PLUGIN.'syntax.php');
+require_once(DOKU_INC.'inc/infoutils.php');
 
 class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
+
+	/// Added in 2015-06 release to implement 
+    static $wikiVERSION;
 
     function getType() { return 'substition'; }
     function getSort() { return 99; }
@@ -80,6 +84,17 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
                 $xhtml = ($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $meta;
                 $nocache = true;
                 break;
+            case 'VER':
+                $xhtml = self::$wikiVERSION;
+                break;
+            case 'VERR':
+                list($vrel,$vdate,$vname) = explode(' ', self::$wikiVERSION);
+                $xhtml = trim($vdate);
+                break;
+            case 'VERN':
+                list($vrel,$vdate,$vname) = explode(' ', self::$wikiVERSION);
+                $xhtml = trim(substr($vname, 1, -1));
+                break;
             default:
                 // for unknown match render original
                 $xhtml = "@{$meta}@";
@@ -102,4 +117,6 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
         return false;
     }
 }
+syntax_plugin_var::$wikiVERSION = getVersion();
+
 // vim:ts=4:sw=4:et:enc=utf-8:
