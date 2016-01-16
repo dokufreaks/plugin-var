@@ -101,20 +101,17 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
                 break;
         }
 
-        // for XHTML output
-        if ($mode == 'xhtml') {
-            // prevent caching to ensure the included pages are always fresh
-            if ($nocache) $renderer->info['cache'] = false;
+        if ($mode == 'metadata') {
+            $renderer->cdata($meta);
+        } else {
+            $renderer->cdata($xhtml);
 
-            $renderer->doc .= hsc($xhtml);
-            return true;
-
-        // for metadata renderer
-        } elseif ($mode == 'metadata') {
-            if ($renderer->capture) $renderer->doc .= $meta;
-            return true;
+            if ($nocache) {
+                $renderer->nocache();
+            }
         }
-        return false;
+
+        return true;
     }
 }
 syntax_plugin_var::$wikiVERSION = getVersion();
