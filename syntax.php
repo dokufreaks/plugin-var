@@ -22,12 +22,12 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
     function getSort() { return 99; }
     function connectTo($mode) { $this->Lexer->addSpecialPattern('@\w{2,6}@', $mode, 'plugin_var'); }
 
-    function handle($match, $state, $pos, &$handler) {
+    function handle($match, $state, $pos, Doku_Handler $handler) {
         $match = substr($match, 1, -1); // strip markup
         return array($match);
     }
 
-    function render($mode, &$renderer, $data) {
+    function render($mode, Doku_Renderer $renderer, $data) {
         global $ID;
         global $INFO;
         global $conf;
