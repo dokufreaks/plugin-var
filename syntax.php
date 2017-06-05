@@ -14,13 +14,14 @@ require_once(DOKU_PLUGIN.'syntax.php');
 require_once(DOKU_INC.'inc/infoutils.php');
 
 class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
+    protected $aliasSeps = '._-';
 
 	/// Added in 2015-06 release to implement 
     static $wikiVERSION;
 
     function getType() { return 'substition'; }
     function getSort() { return 99; }
-    function connectTo($mode) { $this->Lexer->addSpecialPattern('@\w{2,6}@', $mode, 'plugin_var'); }
+    function connectTo($mode) { $this->Lexer->addSpecialPattern('@\w{2,6}['.$this->aliasSeps.']?@', $mode, 'plugin_var'); }
 
     function handle($match, $state, $pos, Doku_Handler $handler) {
         $match = substr($match, 1, -1); // strip markup
@@ -32,7 +33,14 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
         global $INFO;
         global $conf;
 
-        $meta    = $data[0];
+        $meta = $data[0];
+        $length = strlen($meta);
+        $aliasSep = '.';
+        $part = substr($meta, 0, -1);
+        if ($part == 'ALIAS' && strpos ($this->aliasSeps, $meta[$length-1]) !== false) {
+            $aliasSep = $meta[$length-1];
+            $meta = $part;
+        }
         $nocache = false;
         switch ($meta) {
             case 'ID':
@@ -49,6 +57,10 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
                 break;
             case 'USER':
                 $xhtml   = $_SERVER['REMOTE_USER'];
+                $nocache = true;
+                break;
+            case 'ALIAS':
+                $xhtml   = ($_SERVER['REMOTE_USER'] ? str_replace(' ', $aliasSep, $INFO['userinfo']['name']) : $_SERVER['REMOTE_USER']);
                 $nocache = true;
                 break;
             case 'NAME':
