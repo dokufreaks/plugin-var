@@ -28,6 +28,16 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
         return array($match);
     }
 
+    function wikiLink($id, $namespace = false)
+    {
+        if ($namespace)
+            $id = getNS($id);
+        $link = wl($id, '', true);
+        if ($namespace)
+            $link .= '/';
+        return $link;
+    }
+
     function render($mode, Doku_Renderer $renderer, $data) {
         global $ID;
         global $INFO;
@@ -41,6 +51,7 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
             $aliasSep = $meta[$length-1];
             $meta = $part;
         }
+        $metadata = $mode == 'metadata';
         $nocache = false;
         switch ($meta) {
             case 'ID':
@@ -51,9 +62,21 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
                 $xhtml = getNS($ID);
                 $meta  = $xhtml;
                 break;
+            case 'NSL':
+                $meta  = $this->wikiLink($ID, true);
+                $nocache = true;
+                if (!$metadata)
+                    $renderer->externallink($meta);
+                break;
             case 'PAGE':
                 $xhtml = strtr(noNS($ID),'_',' ');
                 $meta  = $xhtml;
+                break;
+            case 'PAGEL':
+                $meta  = $this->wikiLink($ID);
+                $nocache = true;
+                if (!$metadata)
+                    $renderer->externallink($meta);
                 break;
             case 'USER':
                 $xhtml   = $_SERVER['REMOTE_USER'];
@@ -80,9 +103,18 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
                 break;
             case 'MONTH':
                 $xhtml = date('m');
+                $nocache = true;
+                break;
+            case 'SMONTH':
+                $xhtml = date('n');
+                $nocache = true;
                 break;
             case 'DAY':
                 $xhtml   = date('d');
+                $nocache = true;
+                break;
+            case 'SDAY':
+                $xhtml   = date('j');
                 $nocache = true;
                 break;
             case 'WIKI':
@@ -113,11 +145,12 @@ class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
                 break;
         }
 
-        if ($mode == 'metadata') {
+        if ($metadata) {
             $renderer->cdata($meta);
         } else {
-            $renderer->cdata($xhtml);
-
+            if ($xhtml != null) {
+                $renderer->cdata($xhtml);
+            }
             if ($nocache) {
                 $renderer->nocache();
             }
