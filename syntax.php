@@ -6,17 +6,10 @@
  * @author     Esther Brunner <wikidesign@gmail.com>
  */
 
-// must be run within Dokuwiki
-if(!defined('DOKU_INC')) die();
-
-if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
-require_once(DOKU_PLUGIN.'syntax.php');
-require_once(DOKU_INC.'inc/infoutils.php');
-
 class syntax_plugin_var extends DokuWiki_Syntax_Plugin {
     protected $aliasSeps = '._-';
 
-	/// Added in 2015-06 release to implement 
+    /// Added in 2015-06 release to implement 
     static $wikiVERSION;
 
     function getType() { return 'substition'; }
